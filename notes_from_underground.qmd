@@ -1,0 +1,70 @@
+---
+title: "Notes"
+format: pdf
+editor: visual
+toc: true
+---
+
+## Module 1 - Jump start
+
+Goals - to understand the packages and workflow
+
+### Importing Files & Examining the data 
+
+#### **read_excel**
+
+-   Help to read the excel as tibble
+
+-   Can read specific sheet name or sheet number
+
+-   can handle Na.
+
+-   provide col_types mapping
+
+-   check `?read_excel` for more info.
+
+#### **glimpse**
+
+-   provides overview the data-frame in wide format
+
+**left_join**
+
+-   join the two dataframe base on common variable
+
+### Data Wrangling 
+
+separate
+
+-   Split the string column into two or more columns using sep argument
+
+mutate
+
+-    creates new columns that are functions of existing variables.
+
+-   It can also modify (if the name is the same as an existing column) and delete columns (by setting their value to `NULL`)
+
+select
+
+-   Select require columns
+
+-   one provide pattern matching like `endswith` , `startswith` and `contains` or specific datatypes like `is_numeric`
+
+-   `everything()` - list the remaining columns
+
+ggplot2:
+
+-   Refer to ggplot-uncharted course.
+
+## Module 2 - Import & Data wrangling - 1
+
+## Module 3 - Import & Data wrangling - 2
+
+## Module 4 - Data Visualization 
+
+## Module 5 - Function programming 
+
+## Module 6 - Customer Segmentation
+
+## Module 7 - RMarkdown Primer 
+
+##  
