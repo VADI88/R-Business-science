@@ -9,7 +9,7 @@ toc: true
 
 Goals - to understand the packages and workflow
 
-### Importing Files & Examining the data 
+### Importing Files & Examining the data
 
 #### **read_excel**
 
@@ -31,7 +31,7 @@ Goals - to understand the packages and workflow
 
 -   join the two dataframe base on common variable
 
-### Data Wrangling 
+### Data Wrangling
 
 separate
 
@@ -39,7 +39,7 @@ separate
 
 mutate
 
--    creates new columns that are functions of existing variables.
+-   creates new columns that are functions of existing variables.
 
 -   It can also modify (if the name is the same as an existing column) and delete columns (by setting their value to `NULL`)
 
@@ -57,14 +57,132 @@ ggplot2:
 
 ## Module 2 - Import & Data wrangling - 1
 
+**KeyPackages - Excel , tidyr, dplyr,**
+
+## Tidyr concept
+
+Long vs Wide:
+
+-   wide: Good for business report, bad for analysis
+
+-   long: Easy for analysis. 99,9% we will tibble format
+
+    Wide ==\> Long
+
+```         
+df_tbl |> # gather(key = 'col_name',value = 'value',#list of columns)
+```
+
+### Import data
+
+#### CSV :
+
+```         
+df <- readr::read_csv(file_path) ## Normal values 
+# If there is any problem or warming, one can use 
+
+readr::problems(df)
+
+# Once identified, we can use prase method while reading the file 
+
+df <- readr::read_csv(file_path,col_types = cols(col1 = col_double()))
+```
+
+#### RDS :
+
+Save the file as it as file format. it retains the data format.
+
+it can save ggplot files too.
+
+99% for uses cases you can use RDS
+
+```         
+df <- readr::read_rds(file_path) 
+```
+
+#### EXCEL:
+
+```         
+df <- readxl::read_excel(file_path, sheet = "sheet1")
+
+```
+
+### DB Connection
+
+```         
+con<- RSQLite::dbConnect(
+  drv = SQLite(),
+  dbname = 'path_to_databases'
+) 
+
+
+table1_tbl <- tbl(con,'table1_name') |> 
+            collect()
+            
+
+```
+
+## Data wrangling
+
+### 1. Working with features 
+
+-   select
+
+```         
+# Select simple 
+df |> 
+select(list_of_col_name_sep_by_comma)
+
+df |> 
+select(col1,col2,col3)
+
+# Select helpers 
+# starts_with - will select the column that starts with *certain* name 
+df |> 
+select(starts_with('col_name'))
+
+
+# starts_with("a"): names that start with "a".
+# ends_with("z"): names that end with "z".
+# contains("b"): names that contain "b".
+# matches("x.y"): names that match regular expression x.y.
+# num_range(x, 1:4): names following the pattern, x1, x2, ..., x4.
+# all_of(vars)/any_of(vars): matches names stored in the character vector vars # all_of(vars) will error if the variables aren't present; any_of(var) will match just the variables that exist.
+
+# everything(): all variables.
+
+# last_col(): furthest column on the right.
+
+# where(is.numeric): all variables where is.numeric() returns TRUE.
+
+# everything() - remamining column / all variables 
+
+
+df |> 
+    select(col3:col5,everything()) # Rearranging the col3:col5 first and rearranging the remaining
+    
+```
+
+### 2. Working with rows
+
+### 3. Performing feature based columns 
+
+### 4. Performing summary calculation 
+
+### 5. Reshaping Data 
+
+### 6. Combining Data (Joining / Binding 
+
+### 7. Spliting and Combining Column 
+
 ## Module 3 - Import & Data wrangling - 2
 
-## Module 4 - Data Visualization 
+## Module 4 - Data Visualization
 
-## Module 5 - Function programming 
+## Module 5 - Function programming
 
 ## Module 6 - Customer Segmentation
 
-## Module 7 - RMarkdown Primer 
+## Module 7 - RMarkdown Primer
 
-##  
+## 
