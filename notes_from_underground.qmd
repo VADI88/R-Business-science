@@ -3,13 +3,14 @@ title: "Notes"
 format: pdf
 editor: visual
 toc: true
+---re
 ---
 
 ## Module 1 - Jump start
 
 Goals - to understand the packages and workflow
 
-### Importing Files & Examining the data 
+### Importing Files & Examining the data
 
 #### **read_excel**
 
@@ -31,7 +32,7 @@ Goals - to understand the packages and workflow
 
 -   join the two dataframe base on common variable
 
-### Data Wrangling 
+### Data Wrangling
 
 separate
 
@@ -39,7 +40,7 @@ separate
 
 mutate
 
--    creates new columns that are functions of existing variables.
+-   creates new columns that are functions of existing variables.
 
 -   It can also modify (if the name is the same as an existing column) and delete columns (by setting their value to `NULL`)
 
@@ -57,14 +58,286 @@ ggplot2:
 
 ## Module 2 - Import & Data wrangling - 1
 
+**KeyPackages - Excel , tidyr, dplyr,**
+
+## Tidyr concept
+
+Long vs Wide:
+
+-   wide: Good for business report, bad for analysis
+
+-   long: Easy for analysis. 99,9% we will tibble format
+
+    Wide ==\> Long
+
+```         
+df_tbl |> # gather(key = 'col_name',value = 'value',#list of columns)
+```
+
+### Import data
+
+#### CSV :
+
+```         
+df <- readr::read_csv(file_path) ## Normal values 
+# If there is any problem or warming, one can use 
+
+readr::problems(df)
+
+# Once identified, we can use prase method while reading the file 
+
+df <- readr::read_csv(file_path,col_types = cols(col1 = col_double()))
+```
+
+#### RDS :
+
+Save the file as it as file format. it retains the data format.
+
+it can save ggplot files too.
+
+99% for uses cases you can use RDS
+
+```         
+df <- readr::read_rds(file_path) 
+```
+
+#### EXCEL:
+
+```         
+df <- readxl::read_excel(file_path, sheet = "sheet1")
+```
+
+### DB Connection
+
+```         
+con<- RSQLite::dbConnect(
+  drv = SQLite(),
+  dbname = 'path_to_databases'
+) 
+
+
+table1_tbl <- tbl(con,'table1_name') |> 
+            collect()
+            
+```
+
+## Data wrangling
+
+### 1. Working with features
+
+-   select
+
+```{r}
+
+# Select simple 
+df |> 
+select(list_of_col_name_sep_by_comma)
+
+df |> 
+select(col1,col2,col3)
+
+# Select helpers 
+# starts_with - will select the column that starts with *certain* name 
+df |> 
+select(starts_with('col_name'))
+
+
+# starts_with("a"): names that start with "a".
+# ends_with("z"): names that end with "z".
+# contains("b"): names that contain "b".
+# matches("x.y"): names that match regular expression x.y.
+# num_range(x, 1:4): names following the pattern, x1, x2, ..., x4.
+# all_of(vars)/any_of(vars): matches names stored in the character vector vars # all_of(vars) will error if the variables aren't present; any_of(var) will match just the variables that exist.
+
+# everything(): all variables.
+
+# last_col(): furthest column on the right.
+
+# where(is.numeric): all variables where is.numeric() returns TRUE.
+
+# everything() - remamining column / all variables 
+
+
+df |> 
+    select(col3:col5,everything()) # Rearranging the col3:col5 first and rearranging the remaining
+```
+
+## 2. `pull`
+
+**Definition**: Extract a single column as a vector.
+
+```{r}
+pull(df, a)   # Returns: 1 2 3
+```
+
+------------------------------------------------------------------------
+
+## 3. `distinct`
+
+**Definition**: Return unique rows (optionally by selected columns).
+
+```{r}
+df <- tibble(name = c("A", "A", "B"), score = c(1, 1, 2))
+distinct(df)                   # Remove duplicate rows
+distinct(df, name)            # Unique values of name
+```
+
+## 4. `arrange`
+
+**Definition**: Sort rows by column(s).
+
+```{r}
+
+arrange(df, score)            # Ascending
+arrange(df, desc(score))      # Descending
+
+```
+
+------------------------------------------------------------------------
+
+## 5. `filter`
+
+**Definition**: Keep rows matching a condition.
+
+```{r}
+
+filter(df, score > 1)
+```
+
+------------------------------------------------------------------------
+
+## 6. `slice`
+
+**Definition**: Select rows by position.
+
+```{r}
+slice(df, 1)        # First row
+slice(df, 1:2)      # First two rows
+```
+
+------------------------------------------------------------------------
+
+## 7. `mutate`
+
+**Definition**: Add new columns or modify existing ones
+
+```{r}
+mutate(df, score2 = score * 2)
+```
+
+------------------------------------------------------------------------
+
+## 8. `summarize` / `summarise`
+
+**Definition**: Reduce data to summary statistics.
+
+```{r}
+summarize(df, avg_score = mean(score))
+```
+
+------------------------------------------------------------------------
+
+## 9. `group_by` + `summarize`
+
+**Definition**: Grouped summary statistics.
+
+```{r}
+df <- tibble(group = c("A", "A", "B"), score = c(1, 2, 3))
+df %>% group_by(group) %>%
+  summarize(avg = mean(score))
+```
+
+------------------------------------------------------------------------
+
+## 10. `set_names`
+
+**Definition**: Set or change column names.
+
+```{r}
+df <- tibble(x = 1:3, y = 4:6)
+set_names(df, c("a", "b"))
+```
+
+------------------------------------------------------------------------
+
+## 11. `rename_with`
+
+**Definition**: Rename columns using a functions
+
+```{r}
+rename_with(df, toupper)     # All column names to uppercase
+
+```
+
+------------------------------------------------------------------------
+
+## 12. `spread`
+
+**Definition**: Convert long to wide format (deprecated in favor of `pivot_wider`).
+
+```{r}
+df <- tibble(key = c("x", "y"), value = 1:2)
+spread(df, key, value)
+```
+
+------------------------------------------------------------------------
+
+## 13. `gather`
+
+**Definition**: Convert wide to long format (deprecated in favor of `pivot_longer`).
+
+```{r}
+df <- tibble(a = 1:2, b = 3:4)
+gather(df, key = "var", value = "val")
+```
+
+------------------------------------------------------------------------
+
+## 14. `left_join`
+
+**Definition**: Merge data frames by common columns (like SQL left join).
+
+```{r}
+df1 <- tibble(id = 1:2, name = c("A", "B"))
+df2 <- tibble(id = 1:2, score = c(10, 20))
+left_join(df1, df2, by = "id")
+
+
+```
+
+------------------------------------------------------------------------
+
+## 15. `bind_cols`
+
+**Definition**: Combine data frames column-wise.
+
+```{r}
+df1 <- tibble(x = 1:2)
+df2 <- tibble(y = 3:4)
+bind_cols(df1, df2)
+```
+
+------------------------------------------------------------------------
+
+## 16. `unite`
+
+**Definition**: Combine multiple columns into one.
+
+```{r}
+df <- tibble(first = c("John", "Jane"), last = c("Doe", "Smith"))
+unite(df, full_name, first, last, sep = " ")
+```
+
+------------------------------------------------------------------------
+
 ## Module 3 - Import & Data wrangling - 2
 
-## Module 4 - Data Visualization 
+## Module 4 - Data Visualization
 
-## Module 5 - Function programming 
+## Module 5 - Function programming
 
 ## Module 6 - Customer Segmentation
 
-## Module 7 - RMarkdown Primer 
+## Module 7 - RMarkdown Primer
 
-##  
+## 
