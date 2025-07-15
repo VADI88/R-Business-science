@@ -332,6 +332,42 @@ unite(df, full_name, first, last, sep = " ")
 
 ## Module 3 - Import & Data wrangling - 2
 
+### Lubridate
+
+datetime is class `"POSIXct" "POSIXt"`
+
+`ymd` - convert the str ==\> date object
+
+`ymd_hms` - convert the str ==\> datetime object
+
+`year` - extract year
+
+`month` - Extract month returns numeric value with `label = TRUE` =\> string value (Eg : March) & with abbr = TRUE with three words of string value (Eg : Mar)
+
+### Stringr
+
+str_detect
+
+str_to_upper
+
+str_to_lower
+
+str_to_title
+
+str_c
+
+str_glue
+
+tidyr::separate / str_split
+
+str_trim
+
+str_replace
+
+str_replace_all
+
+### Forcats
+
 ## Module 4 - Data Visualization
 
 ## Module 5 - Function programming
