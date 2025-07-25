@@ -174,6 +174,8 @@ bikes_tbl |>
   mutate(
     model = case_when(
       model == 'CAAD Disc Ultegra' ~ 'CAAD12 Disc Ultegra',
+      model == 'Syapse Carbon Tiagra' ~ 'Synapse Carton Tiagar',
+      model == 'Supersix Evo Hi-Mod Utegra' ~ 'Supersix Evo Hi-Mod Ultegra',
       TRUE ~ model
     )
   ) |> # Fix typo
@@ -188,7 +190,50 @@ bikes_tbl |>
   # Creating the base feature
   mutate(
     base_model = case_when(
+      str_detect(str_to_lower(model_1), "supersix") ~
+        str_c(model_1, model_2, sep = ' '),
+
+      str_detect(str_to_lower(model_1), "fat") ~
+        str_c(model_1, model_2, sep = ' '),
+
+      str_detect(str_to_lower(model_1), "beast") ~
+        str_c(model_1, model_2, model_3, model_4, sep = ' '),
+
+      str_detect(str_to_lower(model_1), "bad") ~
+        str_c(model_1, model_2, sep = ' '),
+
+      str_detect(str_to_lower(model_1), 'Scalpel') |
+        str_detect(model_2, '29') ~
+        str_c(model_1, model_2, sep = ' '),
+
       TRUE ~ model_1
     )
   ) |>
-  View()
+  mutate(model_tier = model |> str_replace(base_model, '') |> str_trim()) |>
+
+  select(-contains('model_'), 'model_tier') |>
+
+  mutate(
+    black = model_tier |> str_to_lower() |> str_detect('black') |> as.numeric(),
+
+    hi_mod = model_tier |>
+      str_to_lower() |>
+      str_detect('hi-mod') |>
+      as.numeric(),
+
+    ultegra = model_tier |>
+      str_to_lower() |>
+      str_detect('ultegra') |>
+      as.numeric(),
+
+    team = model_tier |> str_to_lower() |> str_detect('team') |> as.numeric(),
+
+    red = model_tier |> str_to_lower() |> str_detect('red') |> as.numeric(),
+
+    dura_ace = model_tier |>
+      str_to_lower() |>
+      str_detect('dura ace') |>
+      as.numeric(),
+
+    disc = model_tier |> str_to_lower() |> str_detect('disc') |> as.numeric()
+  )

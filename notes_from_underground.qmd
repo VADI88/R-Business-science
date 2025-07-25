@@ -332,41 +332,152 @@ unite(df, full_name, first, last, sep = " ")
 
 ## Module 3 - Import & Data wrangling - 2
 
-### Lubridate
+```{r}
+# ---- lubridate examples ----
 
-datetime is class `"POSIXct" "POSIXt"`
+# 1. ymd - convert string to Date object
+date_obj <- ymd(date_str)
+print(date_obj)
 
-`ymd` - convert the str ==\> date object
+# 2. ymd_hms - convert string to POSIXct datetime
+datetime_obj <- ymd_hms(datetime_str)
+print(datetime_obj)
 
-`ymd_hms` - convert the str ==\> datetime object
+# 3. year - extract year
+print(year(datetime_obj))  # 2025
 
-`year` - extract year
+# 4. month - extract month (numeric, label, abbreviated)
+print(month(datetime_obj))                        # 7
+print(month(datetime_obj, label = TRUE))          # Jul
+print(month(datetime_obj, label = TRUE, abbr = FALSE))  # July
 
-`month` - Extract month returns numeric value with `label = TRUE` =\> string value (Eg : March) & with abbr = TRUE with three words of string value (Eg : Mar)
+# ---- stringr examples ----
 
-### Stringr
+# Sample string
+text <- "  The quick Brown fox Jumps over the lazy Dog.  "
 
-str_detect
+# 5. str_detect - check if substring exists
+print(str_detect(text, "fox"))     # TRUE
 
-str_to_upper
+# 6. str_to_upper - convert to upper case
+print(str_to_upper(text))
 
-str_to_lower
+# 7. str_to_lower - convert to lower case
+print(str_to_lower(text))
 
-str_to_title
+# 8. str_to_title - capitalize each word
+print(str_to_title(text))
 
-str_c
+# 9. str_c - concatenate strings
+str1 <- "Hello"
+str2 <- "World"
+print(str_c(str1, str2, sep = " "))  # "Hello World"
 
-str_glue
+# 10. str_glue - interpolate variables
+name <- "Alice"
+score <- 95
+print(str_glue("Student {name} scored {score}% on the test."))
 
-tidyr::separate / str_split
+# 11. tidyr::separate / str_split - split strings
 
-str_trim
+# Using tidyr::separate
+df <- data.frame(full_date = "2025-07-24")
+df_separated <- separate(df, full_date, into = c("year", "month", "day"), sep = "-")
+print(df_separated)
 
-str_replace
+# Using str_split
+str <- "apple,banana,cherry"
+split_result <- str_split(str, ",")[[1]]
+print(split_result)
 
-str_replace_all
+# 12. str_trim - trim whitespace
+print(str_trim(text))  # Removes leading/trailing spaces
+
+# 13. str_replace - replace first match
+print(str_replace(text, "the", "a"))  # replaces first "the" (case-sensitive)
+
+# 14. str_replace_all - replace all matches
+print(str_replace_all(text, "the", "a"))  # replaces all "the" (case-sensitive)
+```
 
 ### Forcats
+
+```{r}
+
+
+library(tidyverse)
+library(forcats)
+
+
+data(mpg)
+
+
+# 1.0 fct_reorder — Reorder factor levels by another variable (e.g., mean)
+
+# Reorder car classes by average highway mileage
+mpg %>%
+  mutate(class = fct_reorder(class, hwy)) %>%
+  ggplot(aes(x = class, y = hwy)) +
+  geom_boxplot() +
+  coord_flip() +
+  labs(title = "fct_reorder: Class reordered by hwy mileage")
+
+# 2.0 fct_reorder2 — Reorder factor levels using both x and y (often used in line charts)
+
+ # Reorder manufacturer by last recorded hwy value in time series (year)
+mpg %>%
+  group_by(manufacturer, year) %>%
+  summarise(mean_hwy = mean(hwy), .groups = "drop") %>%
+  mutate(manufacturer = fct_reorder2(manufacturer, year, mean_hwy)) %>%
+  ggplot(aes(x = year, y = mean_hwy, color = manufacturer)) +
+  geom_line() +
+  labs(title = "fct_reorder2: Reordering based on year and mean_hwy")
+
+
+# 3.0 as_factor — Convert vector to factor (preserves order)
+
+
+vec <- c("low", "medium", "high")
+f <- as_factor(vec)
+print(f)  # Levels: low < medium < high
+
+
+
+# 4.0 fct_rev - — Reverse factor level order
+
+
+mpg %>%
+  mutate(class = fct_rev(as_factor(class))) %>%
+  ggplot(aes(x = class)) +
+  geom_bar() +
+  coord_flip() +
+  labs(title = "fct_rev: Reversed order of class levels")
+
+
+# 5.0  fct_lump — Lump infrequent levels into "Other"
+
+
+mpg %>%
+  mutate(manufacturer = fct_lump(manufacturer, n = 5)) %>%
+  count(manufacturer, sort = TRUE)
+
+
+
+# 6.0 fct_relevel() — Change the Order of Factor Levels Manually
+
+
+# Reorder to put "suv" first, then "compact"
+mpg %>%
+  mutate(class = fct_relevel(class, "suv", "compact")) %>%
+  ggplot(aes(x = class)) +
+  geom_bar() +
+  labs(title = "fct_relevel: SUV and Compact first") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+\
+
+\
 
 ## Module 4 - Data Visualization
 
