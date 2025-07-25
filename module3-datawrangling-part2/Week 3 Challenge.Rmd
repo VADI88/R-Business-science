@@ -1,0 +1,218 @@
+---
+title: "Week 3 Challenge"
+output: 
+    html_document:
+        toc: TRUE
+        theme: flatly
+        highlight: tango
+        code_folding: show
+        df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = TRUE
+    )
+```
+
+# Challenge Summary
+
+This is a short challenge to begin applying what you are learning to the problem at hand. You will go through a series of questions related to the course project goals: 
+
+1. Coming up with a new product idea, and 
+
+2. Segmenting the customer-base
+
+# Objectives
+
+1. Apply `lubridate` and `stringr` functions to answer questions related to the course projects. 
+
+2. Gain exposure to `rmarkdown`.
+
+# Data
+
+To read the data, make sure that the paths point to the appropriate data sets. Saving the file in the "challenges folder" should enable the paths to be detected correctly. 
+
+```{r, message=FALSE, warning=FALSE}
+# Load libraries
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+# Read bike orderlines data
+path_bike_orderlines <- "../data/bike_sales/data_wrangled/bike_order_line.rds"
+
+bike_orderlines_tbl <- read_rds(path_bike_orderlines) |> 
+    mutate(model = case_when(
+        model == "CAAD Disc Ultegra" ~ "CAAD12 Disc Ultegra",
+        model == "Syapse Carbon Tiagra" ~ "Synapse Carbon Tiagra",
+        model == "Supersix Evo Hi-Mod Utegra" ~ "Supersix Evo Hi-Mod Ultegra",
+        TRUE ~ model
+    ))
+
+glimpse(bike_orderlines_tbl)
+```
+
+
+
+# Questions
+
+# lubridate: Which month has the highest bike sales? (Difficulty = Medium)
+
+- Start with `bike_orderlines_tbl`
+- Select columns `order_date` and `total_price`
+- Add a column called `month`
+- Group by, summarize, and ungroup calculating the `sales`
+- Arrange the sales values by month (Jan - Dec)
+- Format the sales values as `dollar()`
+- Adjust column names to title case
+
+_What does this tell us about a time of year to focus marketing efforts?_
+
+```{r}
+
+bike_orderlines_tbl |> 
+    select(order_date,total_price) |> 
+    mutate(month = month(order_date,label = T)) |> 
+    group_by(month) |> 
+    summarize(sales = sum(total_price)) |> 
+    ungroup() |> 
+    arrange(month) |> 
+    mutate(sales = sales |> scales::dollar(),
+           ) |> 
+    rename_all(str_to_title)
+    
+
+```
+
+
+# stringr: What is the median orderline sales value by Bike Attribute? (Difficulty = Medium)
+
+- Begin with `bike_orderlines`
+- Select `model` and `total_price`
+- Detect if string is present (e.g. "black inc")
+- Groupby, summarize, and ungroup calculating the `median()` orderline
+- Format numeric price as `dollar()` (Hint: investigate `largest_with_cents` argument)
+- Rename column to evaluation string (e.g. "Black Inc") 
+
+
+Evaluate "Black Inc". _What does this tell us about the "Black Inc" feature?_
+
+```{r}
+
+bike_orderlines_tbl |> 
+    select(model,total_price) |> 
+    mutate(is_black = model |> str_to_lower() |> str_detect('black')) |> 
+    group_by(is_black) |> 
+     summarize(sales_median = median(total_price)) |> 
+    ungroup() |> 
+    mutate(sales_median = sales_median |> scales::dollar(largest_with_cents = 10),
+           ) |> 
+    rename(c('Black Inc' = 'is_black',
+             'Median Sales' = 'sales_median'
+             
+             ))
+    
+    
+```
+
+Evaluate "Ultegra". _What does this tell us about the "Ultegra" feature?_
+
+```{r}
+bike_orderlines_tbl |> 
+    select(model,total_price) |> 
+    mutate(ultegra = model |> str_to_lower() |> str_detect('ultegra')) |> 
+    group_by(ultegra) |> 
+     summarize(sales_median = median(total_price)) |> 
+    ungroup() |> 
+    mutate(sales_median = sales_median |> scales::dollar(largest_with_cents = 10)) |> 
+    rename(c('Ultegra' = 'ultegra',
+             'Median Sales' = 'sales_median'
+             ))
+    
+    
+```
+
+
+Evaluate "Disc" option. _What does this tell us about the "Disc" feature?_
+
+```{r}
+bike_orderlines_tbl |> 
+    select(model,total_price) |> 
+    mutate(disc = model |> str_to_lower() |> str_detect('disc')) |> 
+    group_by(disc) |> 
+    summarize(sales_median = median(total_price)) |>  
+    ungroup() |> 
+    mutate(sales_median = sales_median |> scales::dollar(largest_with_cents = 10)) |> 
+    rename(c('Disc' = 'disc',
+             'Median Sales' = 'sales_median'
+             ))
+
+```
+
+
+# stringr: What are the average, min, and max prices by Base Model? (Difficulty = High)
+
+- Start with `bike_orderlines_tbl`
+- Select distinct primary category, secondary category, model, and price (unit price, not total price)
+- Create the base feature, `model_base` (Hint: Use the Feature Engineering code)
+    - separate the models
+    - Create a base feature that combines the appopriate parts (e.g. "Beast of the East")
+- Remove any unnecessary columns (Hint: Deselect any columns matching `"model_[0-9]"`)
+- Group by, summarize, and ungroup (Hint: use `mean()`, `min()`, and `max()`)
+- Arrange descending by average price
+- Format any numeric columns as `dollar()` (Hint: Check out `largest_with_cents`) 
+- Adjust the column names to title case
+
+_What does this tell us about how bikes are priced?_
+
+```{r}
+
+sales_by_cat1_2_model_tbl <- bike_orderlines_tbl |> 
+    select(category_1,category_2,model,price) |> 
+  mutate(
+    model = case_when(
+      model == 'CAAD Disc Ultegra' ~ 'CAAD12 Disc Ultegra',
+      model == 'Syapse Carbon Tiagra' ~ 'Synapse Carton Tiagar',
+      model == 'Supersix Evo Hi-Mod Utegra' ~ 'Supersix Evo Hi-Mod Ultegra',
+      TRUE ~ model
+    )
+  ) |> # Fix typo
+  separate(
+    col = model,
+    into = str_c("model_", 1:7),
+    sep = ' ',
+    remove = FALSE,
+    fill = 'right',
+    extra = 'drop'
+  ) |>
+  # Creating the base feature
+  mutate(model_base = case_when(
+        str_detect(model_1, "Bad") ~ str_c(model_1, model_2, sep = " "),
+        str_detect(model_1, "Beast") ~ str_c(model_1, model_2, model_3, model_4, sep = " "),
+        str_detect(model_1, "Fat") ~ str_c(model_1, model_2, sep = " "),
+        str_detect(model_2, "29") ~ str_c(model_1, model_2, sep = " "),
+        str_detect(model_2, "Supersix") ~ str_c(model_1, model_2, sep = " "),
+        TRUE ~ model_1
+    ))  |>
+  mutate(model_tier = model |> str_replace(base_model, '') |> str_trim()) |>
+  select(-contains('model_'), model_tier,category_1,category_2,price) |> 
+        group_by(category_1,category_2,base_model) |> 
+    summarize(sales_avg = mean(price),
+              sales_min = min(price),
+              sales_max = max(price)
+              
+              ) |> 
+    ungroup() |> 
+    arrange(desc(sales_avg))
+    
+sales_by_cat1_2_model_tbl |> 
+    mutate_if(is.numeric,~scales::dollar(.,largest_with_cents = 10)) |> 
+    rename_all(~ str_replace(.,'_', ' ' ) |> str_to_title())
+ 
+```
+
+
+
+
