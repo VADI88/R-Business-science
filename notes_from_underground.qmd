@@ -477,8 +477,6 @@ mpg %>%
 
 \
 
-\
-
 ## Module 4 - Data Visualization
 
 ## Module 5 - Function programming
