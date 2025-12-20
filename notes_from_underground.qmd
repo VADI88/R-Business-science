@@ -479,7 +479,167 @@ mpg %>%
 
 ## Module 4 - Data Visualization
 
+# ggplot2 Geoms Cheat Sheet
+
+```         
+library(ggplot2)
+data(mpg)
+data(diamonds)
+```
+
+## geom_point() --- Scatterplot
+
+``` r
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point()
+```
+
+## geom_line() --- Line plot
+
+``` r
+ggplot(mpg, aes(displ, hwy)) +
+  geom_line()
+```
+
+## geom_bar() --- Bar plot (counts)
+
+``` r
+ggplot(diamonds, aes(cut)) +
+  geom_bar()
+```
+
+## geom_col() --- Bar plot (values)
+
+``` r
+df <- data.frame(group=c("A","B","C"), value=c(4,7,3))
+ggplot(df, aes(group, value)) +
+  geom_col()
+```
+
+## geom_histogram() --- Histogram
+
+``` r
+ggplot(diamonds, aes(price)) +
+  geom_histogram(bins = 30)
+```
+
+## geom_density() --- Density plot
+
+``` r
+ggplot(diamonds, aes(price)) +
+  geom_density()
+```
+
+## geom_boxplot() --- Boxplot
+
+``` r
+ggplot(mpg, aes(class, hwy)) +
+  geom_boxplot()
+```
+
+## geom_violin() --- Violin plot
+
+``` r
+ggplot(mpg, aes(class, hwy)) +
+  geom_violin()
+```
+
+## geom_area() --- Area plot
+
+``` r
+ggplot(mpg, aes(displ, hwy)) +
+  geom_area()
+```
+
+## geom_tile() --- Tile / Heatmap
+
+``` r
+ggplot(diamonds, aes(cut, color, fill = price)) +
+  geom_tile()
+```
+
+## geom_hex() --- Hexbin plot
+
+``` r
+ggplot(mpg, aes(displ, hwy)) +
+  geom_hex()
+```
+
+## geom_density_2d() --- 2D density plot
+
+``` r
+ggplot(mpg, aes(displ, hwy)) +
+  geom_density_2d()
+```
+
+## geom_smooth() --- Smooth / Regression
+
+``` r
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_smooth()
+```
+
+## geom_ribbon() --- Ribbon
+
+``` r
+df <- data.frame(
+  x = 1:10,
+  y = 1:10,
+  ymin = (1:10) - 2,
+  ymax = (1:10) + 2
+)
+
+ggplot(df, aes(x, y)) +
+  geom_ribbon(aes(ymin = ymin, ymax = ymax), alpha = 0.3) +
+  geom_line()
+```
+
+## geom_text() --- Text labels
+
+``` r
+ggplot(mpg, aes(displ, hwy, label = class)) +
+  geom_text()
+```
+
+## geom_label() --- Label with box
+
+``` r
+ggplot(mpg, aes(displ, hwy, label = class)) +
+  geom_label()
+```
+
+## geom_segment() --- Line segments
+
+``` r
+df <- data.frame(x=1, xend=5, y=1, yend=4)
+ggplot(df) +
+  geom_segment(aes(x=x, xend=xend, y=y, yend=yend))
+```
+
+## geom_abline() --- Reference line
+
+``` r
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_abline(slope=1, intercept=0, color="red")
+```
+
 ## Module 5 - Function programming
+
+### Two types of functions 
+
+#### vectorize functions:
+
+Examples ymd , ceiling_date
+
+first input varaibles would be X that would be vector dtypes
+
+#### Dataframe fuctions
+
+ExampleL Select , mutate , etc ,
+
+first input varaibles would be .data or .tbl that would be vector dtypes
 
 ## Module 6 - Customer Segmentation
 
