@@ -627,19 +627,157 @@ ggplot(mpg, aes(displ, hwy)) +
 
 ## Module 5 - Function programming
 
-### Two types of functions 
+### Two types of functions
 
 #### vectorize functions:
 
-Examples ymd , ceiling_date
+Examples: ymd , ceiling_date
 
 first input varaibles would be X that would be vector dtypes
 
 #### Dataframe fuctions
 
-ExampleL Select , mutate , etc ,
+Examples: Select , mutate , etc ,
 
 first input varaibles would be .data or .tbl that would be vector dtypes
+
+### Purrr functions
+
+```{r}
+library(purrr)
+```
+
+#### 1. map function
+
+Apply a function to each element of a vector or list.
+
+```{r}
+nums <- c(1, 2, 3, 4)
+# Method 1 
+map(nums, sqrt) # 1,4,9,16 
+# Method 2 Anonymous function
+
+map(nums, ~ .x^2)
+
+```
+
+#### 2. map\_\* function
+
+These enforce return types.
+
+##### `map_dbl()`
+
+```{r}
+map_dbl(nums, sqrt)
+```
+
+##### `map_int()`
+
+```{r}
+map_int(nums, ~ .x * 2)
+```
+
+##### `map_chr()`
+
+```{r}
+map_chr(nums, as.character)
+```
+
+#### 3. map2() function
+
+Iterate over **two vectors** simultaneously.
+
+```{r}
+x <- c(1, 2, 3)
+y <- c(10, 20, 30)
+
+map2(x, y, ~ .x + .y)
+```
+
+#### 4. pmap function 
+
+Iterate over **multiple inputs** stored in a list or data frame.
+
+```{r}
+params <- list(
+  a = c(1, 2),
+  b = c(10, 20),
+  c = c(100, 200)
+)
+
+pmap(params, ~ ..1 + ..2 + ..3)
+```
+
+#### 5. `keep()` and `discard()`
+
+Filter vectors based on a condition.
+
+```{r}
+# Keep 
+
+keep(nums, ~ .x > 2)
+
+# Discard 
+
+discard(nums, ~ .x > 2)
+
+
+
+```
+
+#### 6. compact()
+
+```{r}
+x <- list(1, NULL, 3, NULL, 5)
+compact(x)
+
+```
+
+#### 7.  possibly()
+
+```{r}
+safe_log <- possibly(log, otherwise = NA_real_)
+
+safe_log(10)
+safe_log("a")
+
+```
+
+#### 8.  safely()
+
+Return both the result and the error (if any).
+
+```{r}
+
+safe_divide <- safely(function(x) 10 / x)
+
+safe_divide(2)
+safe_divide(0)
+
+```
+
+#### 9. reduce()
+
+```{r}
+
+# adding 
+reduce(nums, `+`)
+
+# multiply 
+reduce(nums, `*`)
+```
+
+#### 10.  map_dbl 
+
+```{r}
+df <- tibble::tibble(
+  x = list(1:3, 4:6, 7:9)
+)
+df %>%
+  dplyr::mutate(
+    mean_x = map_dbl(x, mean)
+  )
+```
 
 ## Module 6 - Customer Segmentation
 

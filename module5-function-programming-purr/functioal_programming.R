@@ -298,25 +298,24 @@ separate_bike_model <- function(data, keep_model_column = TRUE, append = TRUE) {
 
       disc = model_tier |> str_to_lower() |> str_detect('disc') |> as.numeric()
     )
-  
-  if(!keep_model_column) output_tbl <- output_tbl |> select(-model)
-  
-    return(output_tbl)
+
+  if (!keep_model_column) output_tbl <- output_tbl |> select(-model)
+
+  return(output_tbl)
 }
 
 
-## TO create directory using fs 
+## TO create directory using fs
 
 #fs::dir_create('scripts/')
 
-
-## TO create R Code using fs 
+## TO create R Code using fs
 
 fs::file_create(path = 'scripts/utils.R')
 
 
 file_header <- str_glue(
-"
+  "
 # Separate Bikemodels and detect outliers ----
 
 # separate_bike_model(): A tidy function that separate model column into engineered features 
@@ -327,21 +326,21 @@ file_header <- str_glue(
 
 library(tidyverse)
 "
-    
 )
 
 
 write_lines(file_header, path = 'scripts/utils.R')
 
-# Add the function to the file with dump --- 
+# Add the function to the file with dump ---
 
-c("separate_bike_model","detect_outliers") |> dump(file = 'scripts/utils.R',append = TRUE)
+c("separate_bike_model", "detect_outliers") |>
+  dump(file = 'scripts/utils.R', append = TRUE)
 
 
 # Source the function with source ---
-# 
+#
 
 source('scripts/utils.R')
 
-bikes_tbl |> 
-    separate_bike_model()
+bikes_tbl |>
+  separate_bike_model()
