@@ -694,7 +694,7 @@ y <- c(10, 20, 30)
 map2(x, y, ~ .x + .y)
 ```
 
-#### 4. pmap function 
+#### 4. pmap function
 
 Iterate over **multiple inputs** stored in a list or data frame.
 
@@ -733,7 +733,7 @@ compact(x)
 
 ```
 
-#### 7.  possibly()
+#### 7. possibly()
 
 ```{r}
 safe_log <- possibly(log, otherwise = NA_real_)
@@ -743,7 +743,7 @@ safe_log("a")
 
 ```
 
-#### 8.  safely()
+#### 8. safely()
 
 Return both the result and the error (if any).
 
@@ -767,7 +767,7 @@ reduce(nums, `+`)
 reduce(nums, `*`)
 ```
 
-#### 10.  map_dbl 
+#### 10. map_dbl
 
 ```{r}
 df <- tibble::tibble(
