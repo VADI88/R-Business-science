@@ -109,4 +109,5 @@ dependencies = [
   { name = "writexl", repository = "CRAN" },
   { name = "xts", repository = "CRAN" },
   "S7",
+    "logger",
 ]
