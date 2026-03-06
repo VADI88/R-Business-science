@@ -185,3 +185,122 @@ model_07_xgboost <- boost_tree(
       select(-id, -model, -model_tier) |>
       mutate_if(is_character, as_factor)
   )
+
+
+model_07_xgboost |>
+  calculate_metrics(new_data = testing_tbl, y_column = price)
+
+
+# .metric .estimator .estimate
+# <chr>   <chr>          <dbl>
+# rmse    standard    1453.
+# rsq     standard       0.874
+# mae     standard     903.
+
+model_07_xgboost$fit |>
+  xgboost::xgb.importance() |>
+  as_tibble() |>
+  janitor::clean_names() |>
+  arrange(desc(gain)) |>
+  mutate(feature = feature |> as_factor() |> fct_rev()) |>
+  ggplot(aes(y = feature, x = gain)) +
+  geom_point() +
+  ggrepel::geom_label_repel(
+    aes(label = number(gain, accuracy = 0.001)),
+    size = 3
+  ) +
+  labs(
+    title = "XGBOOST: Feature Importance",
+    subtitle = "Model 07: XGBoost Model"
+  )
+
+
+##### New predictions tbl ####
+#####
+#####
+bike_feature_tbl |>
+  colnames()
+
+new_over_mountain_jekyll <- tibble(
+  model = 'Jekyll A1 1',
+  frame_material = "Aluminum",
+  category_2 = "Over Mountain",
+  base_model = "Jekyll",
+  model_tier = "Alumium 1",
+  black = 0,
+  hi_mod = 0,
+  team = 0,
+  red = 0,
+  ultegra = 0,
+  dura_ace = 0,
+  disc = 0
+)
+
+model_07_xgboost |>
+  predict_numeric(new_data = new_over_mountain_jekyll)
+
+# [1] 1814.645
+
+
+
+# 6.0 BONUS - PREPROCESSING & SVM-Regression ----
+
+recipe_obj <- recipe(price ~ ., data = training_tbl) |> 
+  update_role(id, new_role = "id") |> 
+  update_role_requirements(role = "id", bake = FALSE) |> 
+  step_rm(id,model,model_tier) |>  # REMOVE THE PROVIDED COLUMN 
+  step_dummy(all_nominal(),one_hot = TRUE) |>  # CONVERTED NOMINAL COLUMNS TO ONE HOT 
+  step_log(price,skip = TRUE) |>  # CONVERT TO LOG PRICE
+  step_center(price,skip = TRUE) |> # NORMALIZE THE COLUMN WITH mean of the columns 
+  step_scale(price,skip = TRUE) |> # SCALE THE COLUMN TO APPEAR WITHIN [-1 , 1 ]
+  prep()
+
+
+
+recipe_obj |> 
+  bake(new_data =  training_tbl) |> 
+  glimpse()
+
+training_transformed_tbl <- recipe_obj |> 
+  bake(new_data =  training_tbl)
+
+
+testing_transformed_tbl <- recipe_obj |> 
+  bake(new_data =  testing_tbl)
+
+
+recipe_scale <- recipe_obj |> 
+  tidy(number = 5)
+
+recipe_center <- recipe_obj |> 
+  tidy(number = 4)
+
+
+model_08_svm_rbf <- svm_rbf(mode = "regression",cost = 30, rbf_sigma = 0.05,margin = 0.4) |> 
+  set_engine("kernlab",scaled = FALSE) |> 
+  fit(price ~ . , data= training_transformed_tbl)
+
+
+
+model_08_svm_rbf |> 
+  predict(new_data = testing_transformed_tbl) |> 
+  mutate(.pred = .pred * recipe_scale$value,
+         .pred = .pred + recipe_center$value,
+         .pred = exp(.pred)
+         
+  ) |> 
+  bind_cols(testing_tbl |> select(price)) |> 
+  metrics(truth = price, estimate = .pred)
+
+bake(recipe_obj, new_data = new_over_mountain_jekyll) |> 
+  predict(object = model_08_svm_rbf) |> 
+  mutate(
+    .pred = .pred * recipe_scale$value,
+    .pred = .pred + recipe_center$value,
+    .pred = exp(.pred)
+  )
+
+
+
+
+
