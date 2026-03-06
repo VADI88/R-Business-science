@@ -781,6 +781,330 @@ df %>%
 
 ## Module 6 - Customer Segmentation
 
+### K-means
+
+1.  select the number of cluster you want to identify in your data ==\> "K"
+2.  Randomly select 3 distinct data points. Initial clusters point
+3.  Measure the distance between each point and 3 initial point.
+4.  Assign the point to cluster with shortest distance (For 1D it is distance of line , for more than 1 ,it is euclidean distance)
+5.  calculate the mean and variance per clusters
+6.  repeat steps 2 to 5 , calculate the variations . selected lowest variation
+7.  repeat steps 1 to 6 for different value of K. Identify the value of k that provides greater reduction in variation (elbow point)
+
+::: callout-note
+k means vs hierarchical clustering
+
+1.  k means requires initial values of K (number of clusters as input). hierarchical clustering just inform us , pairwise, what two things are most similar
+:::
+
+### Hierarchical clustering
+
+compare the data points among each other.
+
+-   comparison is done via euclidean distance, Manhattan between them
+
+-   Identify the shortest distance between points and cluster them.
+
+-   We can use multiple ways to compare clusters and point .
+
+#### 1.Start with individual data points
+
+-   Each data point is its **own cluster**.
+
+#### 2. Measure distance between clusters
+
+-   Calculate how similar or different data points are.
+
+-   Common distance measures:
+
+    -   Euclidean distance
+
+    -   Manhattan distance
+
+#### 3. Merge the closest clusters
+
+-   Find the two clusters that are **most similar**.
+
+-   Merge them into a single cluster.
+
+#### 4. Update distances
+
+-   Recalculate distances between the new cluster and all other clusters.
+
+-   This depends on the **linkage method**, such as:
+
+    -   **Single linkage**: closest points
+
+    -   **Complete linkage**: farthest points
+
+    -   **Average linkage**: average distance
+
+    -   **Ward’s method**: minimizes variance within clusters
+
+#### 5. Repeat merging
+
+-   Keep merging the closest clusters.
+
+-   Continue until:
+
+    -   All points are in one cluster, or
+
+    -   You reach the desired number of clusters.
+
+#### 6. Choose the number of clusters
+
+-   Cut the dendrogram at a certain height.
+
+-   Each cut gives you a different number of clusters.
+
+### PCA
+
+is a technique used to **simplify data** by reducing the number of variables while keeping most of the important information.
+
+#### Step 1: Standardize the data
+
+-   Make sure all features have mean = 0 and standard deviation = 1
+
+-   Important because PCA is affected by scale
+
+------------------------------------------------------------------------
+
+#### Step 2: Compute covariance matrix
+
+-   Shows how variables change together
+
+-   Helps understand relationships between features
+
+------------------------------------------------------------------------
+
+#### Step 3: Calculate eigenvalues and eigenvectors
+
+-   **Eigenvectors** → directions (principal components)
+
+-   **Eigenvalues** → amount of variance captured by each component
+
+------------------------------------------------------------------------
+
+#### Step 4: Sort components
+
+-   Sort eigenvalues from largest to smallest
+
+-   The first principal component captures the most variance
+
+------------------------------------------------------------------------
+
+#### Step 5: Select number of components
+
+-   Choose top *k* components that explain most of the variance
+
+-   Often based on:
+
+    -   Explained variance ratio
+
+    -   Scree plot
+
+------------------------------------------------------------------------
+
+#### Step 6: Transform the data
+
+-   Project original data onto selected principal components
+
+-   Get a new reduced dataset
+
+### UMAP
+
+UMAP (Uniform Manifold Approximation and Projection) is a powerful, **non-linear dimensionality reduction algorithm** used to visualize high-dimensional datasets in 2D or 3D, revealing underlying structures like clusters of similar data points.
+
+-   **Visualization:** Its primary use is to plot complex data onto a simple 2D map, showing relationships.
+
+-   **Dimensionality Reduction:** It reduces many variables (dimensions) to just two (UMAP1 & UMAP2) for plotting.
+
+-   **Speed & Scalability:** Generally faster and better at preserving global data structure than similar techniques like t-SNE.
+
+-   **Versatility:** Can be used for general visualization, clustering, or as a pre-processing step for other machine learning tasks. 
+
+### Machine learning
+
+Introduction:
+
+Machine learning is all about to prediction or classifications
+
+Lingo for Machine learning:
+
+Training data - Given data or original data
+
+We use new data (Testing data) to compare the different models (Functions) for identifying the best model for training data.
+
+We do this comparison by defining the cost functions.
+
+-   **Regression Functions (for continuous outputs):**
+
+    -   **Mean Squared Error (MSE):** Averages squared errors, penalizing large errors heavily.
+
+    -   **Mean Absolute Error (MAE):** Averages absolute errors, robust to outliers.
+
+-   **Classification Functions (for categorical outputs):**
+
+    -   **Cross-Entropy:** Measures discrepancy between predicted probabilities and true labels, often using Sigmoid for binary or Softmax for multi-class
+
+::: callout-note
+Fitting the Training date well but making poor prediction is called Bias -Variance tradeoff
+:::
+
+#### Bias Variance
+
+The inability of machine learning technique to capture the true relationship between independent and dependent is called **Bias**
+
+The difference in fits between training and testing data is called **Variance**.
+
+**Overfit if we have low bias and high variance.**
+
+Simple model will have high bias and low variance
+
+Complex model will have low bias and high varaince.
+
+Three common methods between simple and complex model is **regularization, boosting and bagging.**
+
+#### Cross Validation:
+
+Learning the parameters of a prediction function and testing it on the same data is a methodological mistake: a model that would just repeat the labels of the samples that it has just seen would have a perfect score but would fail to predict anything useful on yet-unseen data. This situation is called **overfitting**. To avoid it, it is common practice when performing a (supervised) machine learning experiment to hold out part of the available data as a **test set.**
+
+There is two different cross validation
+
+-   K-fold cross validation - divide the data into k sample , take k-1 as training data and remaining one sample as testing data. Repeat the above method for k times.
+
+-   Leave One Cross validation: In extreme case, we leave one entire individuals.
+
+#### Linear Regression (simple) :
+
+Def: fitting a line to the data or least square.
+
+y =\> a \* X + b
+
+1.  fit a line that follows random values for a and b.
+2.  Identify the Sum of Sqaure Residuals , i.e Total value of squared difference of real value from line
+3.  repeated step 1 and 2 till we identify the minimum value for Sum of Sqaure Residuals. Hence this method is called Least Square Method
+4.  R^2^ (R squared)
+
+#### Linear Regression (Multiple)
+
+Linear models are amazingly easy to interpret provided we understand how a linear modeling equation works. The prediction function looks like this:
+
+*y_pred = Intercept + c1 x Feature1 + c2 x Feature2 + ... + cN x FeatureN*
+
+Where the:
+
+-   **Intercept:** Is what all predictions start out at.
+
+-   **Model Coefficients (c1 through cN):** Estimates that adjust the features weight in the model
+
+-   **Features (1 through N):** The value of the Feature in the model (categorical are encoded as binary, numeric are left as numeric)
+
+#### Ridge Regression:
+
+when the sample size is small , then ridge regression can improve prediction by making the data less sensitive to the training data.
+
+It is one of the way of regularization.
+
+we introduce small amount of bias while training the models.
+
+instead of minimize the Sum of Sqaure Residuals ,\
+in ridge regression , we try to reduce Sum of Sqaure Residuals + lambda \* slope ^\^ 2^
+
+#### **LASSO Regression**
+
+Instead of square the slope in penalty, we take absolute value of slope, then we get Lasso Regression.
+
+Since Lasso regression can exclude useless variables from equations, it is litter better than Ridge regression at reducing the variance in models that contains a lot of useless variables.
+
+#### **Elastic Regression**
+
+For penalty, we combine Lasso Penalty + Ridge Penalty
+
+It does a better job dealing with correlated parameters.
+
+#### Decision tree
+
+decision tree ask a questions and then classify based on the answer given.
+
+very top of the tree is called root node (just the root)
+
+remaining the nodes are called internal node.
+
+very end of the tree is called leaf.
+
+Gini - the technique that uses impurity level and determine which nodes to select and which order (number of yes and number of no) .
+
+Gini for a leaf is calculated = 1- (Probability of Yes) \^ 2 - (Probability of No) \^ 2
+
+Gini for one node = weighted average of gini impurity for leaf nodes.
+
+reepeat for each dimensions (Node)
+
+we select the lowest gini among the nodes.
+
+#### Random Forest
+
+We bootstrap the given data (random sampling) into n times and create decision tree for each bootstrapped data.
+
+Bootstrapping along aggregating many using a technique called "Bagging".
+
+Out of bag samples ==\> are the data that were not present during bootstrapping.
+
+We can measure accurate of random forest by the proportion of out of bag samples that were correctly classified by random forest. (Called as out of bag error)
+
+#### XGBoost:
+
+XGBoost builds many small **decision trees.**
+
+Instead of building one big tree, XGBoost builds trees **one at a time**, and each new tree:
+
+-   Focuses on the **mistakes** made by the previous trees
+
+-   Tries to correct those mistakes
+
+This process is called **gradient boosting**.
+
+Combine weak learners into strong learners ??
+
+##### Gradient Descent
+
+1.  Pick a random values for weights and bias
+
+2.  Then we evaluate how well the models fits the data. i.e. calculate loss function - Sum of square residuals
+
+3.  Repeat the different values for weight bias and calculate of the loss functions
+
+##### AdaBoost: 
+
+Adaboost combines many weak learns to make classifications.
+
+Each weak learns is make by taking the previous stumps' mistakes
+
+#### Coding - Tidy models
+
+1.  parsnip
+
+    contains wrapper for many machine learning models. It provides easy to use API (Similar to scikit learn).
+
+2.  rsample
+
+    Helps to create training testing split.
+
+3.  recipes
+
+    for pre-processing pipelines.
+
+    -   recipe  - Initial setups
+
+    -   step\_ \* - multi steps that can be used for preprocessing
+
+    -   
+
+4.  yardstick
+
+    helps us to create metrics for any machine learning algorithms
+
 ## Module 7 - RMarkdown Primer
 
 ## 

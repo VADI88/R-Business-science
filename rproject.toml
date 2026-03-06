@@ -110,4 +110,5 @@ dependencies = [
   { name = "xts", repository = "CRAN" },
   "S7",
     "logger",
+    "umap",
 ]
