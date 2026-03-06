@@ -1099,7 +1099,9 @@ Each weak learns is make by taking the previous stumps' mistakes
 
     -   step\_ \* - multi steps that can be used for preprocessing
 
-    -   
+    -   prep
+
+    -   bake
 
 4.  yardstick
 
