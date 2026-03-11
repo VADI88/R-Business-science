@@ -1075,7 +1075,7 @@ Combine weak learners into strong learners ??
 
 3.  Repeat the different values for weight bias and calculate of the loss functions
 
-##### AdaBoost: 
+##### AdaBoost:
 
 Adaboost combines many weak learns to make classifications.
 
@@ -1095,7 +1095,7 @@ Each weak learns is make by taking the previous stumps' mistakes
 
     for pre-processing pipelines.
 
-    -   recipe  - Initial setups
+    -   recipe - Initial setups
 
     -   step\_ \* - multi steps that can be used for preprocessing
 

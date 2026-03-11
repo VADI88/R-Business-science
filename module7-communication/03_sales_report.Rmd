@@ -1,0 +1,120 @@
+---
+title: "Sales Report"
+author: "Vadivel"
+date: "2026-03-08"
+output: 
+    html_document:
+        code_folding: none
+        df_print: paged
+        theme: flatly
+        highlight: tango
+        toc: yes
+        toc_depth: 2 
+    pdf_document:
+        toc: yes
+        toc_depth: 2 
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    out.width = "100%",
+    out.height = "500px",
+    fig.pos = "center",
+    dpi = 300)
+```
+
+```{r libraries, echo=FALSE}
+library(tidyverse)
+library(tidyquant)
+
+library(lubridate)
+library(plotly)
+
+```
+
+```{r scripts}
+source('../scripts/plot_sales.R')
+
+```
+
+```{r reading_the_data}
+bike_orderlines_tbl <- read_rds('../data/bike_sales/data_wrangled/bike_order_line.rds')
+
+interactive <- TRUE
+```
+# Total Sales Charts {.tabset .tabset-fade .tabset-pills}
+
+## Quarterly Sales trend 
+```{r}
+plot_total_sales(unit = 'quarter')
+
+```
+
+## Monthly  Sales trend 
+```{r}
+plot_total_sales(unit = 'month')
+
+```
+
+
+## Weekly  Sales trend 
+```{r}
+plot_total_sales(unit = 'week')
+
+```
+
+# Category Sales Charts {.tabset .tabset-fade .tabset-pills}
+
+## Road {.tabset .tabset-fade}
+
+### Quarterly
+
+```{r, fig.height=20,out.height="1000px"}
+plot_categories(category_1 = "Road", unit = "quarter", ncol = 1, interactive = interactive)
+```
+
+
+### Monthly
+
+```{r, fig.height=20,out.height="1000px"}
+plot_categories(category_1 = "Road", unit = "month", ncol = 1, interactive = interactive)
+```
+
+### Weekly
+
+```{r, fig.height=20,out.height="1000px"}
+plot_categories(category_1 = "Road", unit = "week", date_format = "%Y-%m-%d", ncol = 1, 
+                interactive = interactive)
+```
+
+## Mountain {.tabset .tabset-fade}
+
+### Quarterly
+
+```{r, fig.height=20,out.height="1000px"}
+plot_categories(category_1 = "Mountain", unit = "quarter", ncol = 1, interactive = interactive)
+```
+
+
+### Monthly
+
+```{r, fig.height=20,out.height="1000px"}
+plot_categories(category_1 = "Mountain", unit = "month", ncol = 1, interactive = interactive)
+```
+
+### Weekly
+
+```{r, fig.height=20,out.height="1000px"}
+plot_categories(category_1 = "Mountain", unit = "week", date_format = "%Y-%m-%d", ncol = 1, 
+                interactive = interactive)
+```
+
+
+
+
+
+

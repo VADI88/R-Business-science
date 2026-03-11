@@ -301,6 +301,46 @@ bake(recipe_obj, new_data = new_over_mountain_jekyll) |>
   )
 
 
+# 8.0 SAVING & LOADING MODELS ----
+
+fs::dir_create("models")
+
+models_tbl <- list(
+  "MODEL_01__LM_SIMPLE"  = model01_linear_regression_lm,
+  "MODEL_02__LM_COMPLEX" = model02_linear_regression_lm,
+  "MODEL_03__GLMNET"     = model03_linear_regression_glm,
+  "MODEL_04__DECISION_TREE"   = model_04_decsion_tree_rpart,
+  "MODEL_05__RF_RANGER"       = model_05_random_forest_ranger,
+  "MODEL_06__RF_RANDOMFOREST" = model_06_random_forest_randomForest,
+  "MODEL_07__XGBOOST" = model_07_xgboost,
+  "MODEL_08__SVM"     = model_08_svm_rbf
+) |> 
+  enframe(name = "model_id", value = "model") |> 
+  mutate(model = purrr::map(model, bundle::bundle)) 
+
+models_tbl
+
+models_tbl|> write_rds("models/parsnip_models_tbl.rds")
+
+recipes_tbl <- list(
+  "RECIPE_01" = recipe_obj
+) |> 
+  enframe(name = "recipe_id", value = "recipe")
+
+recipes_tbl |>  write_rds("models/recipes_tbl.rds")
+
+calculate_metrics |> write_rds("scripts/calc_metrics.rds")
+
+# Reading
+
+models_tbl <- read_rds("models/parsnip_models_tbl.rds")
+
+recipes_tbl <- read_rds("models/recipes_tbl.rds")
+
+calc_metrics <- read_rds("scripts/calc_metrics.rds")
+
+
+
 
 
 
